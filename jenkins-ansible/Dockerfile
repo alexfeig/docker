@@ -1,3 +1,5 @@
+# Builds Jenkins with local Ansible
+
 FROM jenkins
 
 LABEL maintainer "alex.feigenson@gmail.com"
