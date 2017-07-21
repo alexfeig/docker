@@ -1,0 +1,48 @@
+version: "3.0"
+
+services:
+  #portainer:
+  #  image: portainer/portainer
+  #  container_name: aelk_portainer
+  #  ports:
+  #    - "9000:9000"
+  #  volumes:
+  #    - /var/run/docker.sock:/var/run/docker.sock
+
+  kafka:
+    image: spotify/kafka
+    container_name: aelk_kafka
+    ports:
+      - "2181:2181"
+      - "9092:9092"
+    environment:
+      - ADVERTISED_HOST=172.16.198.1
+      - ADVERTISED_PORT=9092
+
+  elasticsearch:
+    image: elasticsearch
+    container_name: aelk_elasticsearch
+    ports:
+      - "9200:9200"
+
+  kibana:
+    image: kibana
+    container_name: aelk_kibana
+    ports:
+      - "5601:5601"
+    links:
+      - elasticsearch:elasticsearch
+
+  logstash:
+    image: aristanetworks/logstash
+    container_name: aelk_logstash
+    environment:
+      - BOOTSTRAP_SERVERS=172.16.198.1:9092
+      - ES_HOST=172.16.198.1:9200
+
+  ockafka:
+    image: aristanetworks/ockafka
+    container_name: aelk_ockafka
+    command: -addrs 172.16.198.130 -kafkaaddrs 172.16.198.1:9092 -username admin -password arista -subscribe /Kernel/proc/cpu
+    restart: always
+
